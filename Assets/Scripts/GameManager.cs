@@ -1,10 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public TileBoard board;
     public CanvasGroup gameOver;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI highScoreText;
+    private int score;
 
     private void Start()
     {
@@ -13,6 +17,9 @@ public class GameManager : MonoBehaviour
 
     public void NewGame()
     {
+        SetScore(0);
+        highScoreText.text = LoadHighScore().ToString();
+
         gameOver.alpha = 0f;
         gameOver.interactable = false;
 
@@ -46,5 +53,34 @@ public class GameManager : MonoBehaviour
         }
 
         canvasGroup.alpha = to;
+    }
+
+    private void SetScore(int score)
+    {
+        this.score = score;
+        scoreText.text = score.ToString();
+
+        SaveHighScore();
+    }
+
+    public void IncreaseScore(int points)
+    {
+        SetScore(score + points);
+    }
+
+    private void SaveHighScore()
+    {
+        int highScore = LoadHighScore();
+
+        if (score > highScore)
+        {
+            PlayerPrefs.SetInt("highScore", score);
+        }
+
+    }
+
+    private int LoadHighScore()
+    {
+        return PlayerPrefs.GetInt("highScore", 0);
     }
 }
